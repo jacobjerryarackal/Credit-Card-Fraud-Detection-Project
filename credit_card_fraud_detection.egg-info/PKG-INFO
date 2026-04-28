@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: credit-card-fraud-detection
+Version: 0.1.0
+Summary: Credit Card Fraud Detection MLOps Pipeline
+Requires-Python: >=3.8
+Requires-Dist: pandas==2.3.2
+Requires-Dist: scikit-learn==1.2.2
+Requires-Dist: zenml
+Requires-Dist: mlflow
+Requires-Dist: evidently
+Requires-Dist: xgboost
+Requires-Dist: lightgbm

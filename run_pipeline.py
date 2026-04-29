@@ -33,4 +33,8 @@ if __name__ == "__main__":
     fraud_detection_training_pipeline()
     
     print("\n✅ Pipeline execution completed successfully!")
-    print("To view your experiment results, run this command in your terminal: mlflow ui")
+    
+    from zenml.client import Client
+    tracking_uri = Client().active_stack.experiment_tracker.get_tracking_uri()
+    print("\nTo view your experiment results, run this command in your terminal:")
+    print(f"mlflow ui --backend-store-uri \"{tracking_uri}\"")

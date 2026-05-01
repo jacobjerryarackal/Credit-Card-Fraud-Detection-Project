@@ -12,3 +12,15 @@ dependencies = [
     "xgboost",
     "lightgbm"
 ]
+
+[tool.ruff]
+select = ["E", "F", "I", "N", "UP", "B", "A", "SIM", "TCH"]
+line-length = 120
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "steps", "pipelines"]
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

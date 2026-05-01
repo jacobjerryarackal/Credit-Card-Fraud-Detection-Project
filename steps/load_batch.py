@@ -4,7 +4,7 @@ from typing_extensions import Annotated
 
 @step
 def load_batch_data(
-    file_path: str = "credit_card_fraud_dataset.csv",
+    file_path: str = "data/credit_card_fraud_dataset.csv",
     batch_size: int = 100
 ) -> Annotated[pd.DataFrame, "batch_data"]:
     """Loads unlabelled batch data for inference (simulates dropping target)."""

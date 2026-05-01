@@ -7,7 +7,7 @@ from core.validation import validate_fraud_dataset
 
 @step
 def load_and_split_data(
-    file_path: str = "credit_card_fraud_dataset.csv",
+    file_path: str = "data/credit_card_fraud_dataset.csv",
     test_size: float = 0.2,
     random_state: int = 42
 ) -> Tuple[

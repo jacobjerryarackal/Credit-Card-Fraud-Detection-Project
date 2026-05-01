@@ -23,7 +23,7 @@ def load_latest_model() -> Pipeline:
             
         # Extract the exact sklearn pipeline artifact that was output by the train step
         model_artifact = latest_run.steps["train_and_evaluate_model"].outputs["output"]
-        return model_artifact.load()
+        return model_artifact[0].load()
         
     except KeyError as e:
         raise RuntimeError(f"Error loading model artifact. Make sure the training pipeline ran successfully. Details: {e}")

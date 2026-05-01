@@ -18,6 +18,6 @@ def predict_fraud(
     
     # Demo output
     high_risk = (predictions > 0.5).sum()
-    print(f"🚨 Found {high_risk} high-risk transactions in this batch.")
+    print(f"[ALERT] Found {high_risk} high-risk transactions in this batch.")
     
     return predictions

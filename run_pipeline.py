@@ -1,27 +1,34 @@
 import subprocess
 from pipelines.training_pipeline import fraud_detection_training_pipeline
 
-def setup_zenml_stack():
+def setup_zenml_stack() -> None:
     """Ensures the ZenML stack has MLflow configured for our local run."""
     print("Setting up ZenML stack with MLflow...")
     
     # 1. Register MLflow experiment tracker (ignore errors if it already exists)
-    subprocess.run(
+    res1 = subprocess.run(
         ["zenml", "experiment-tracker", "register", "mlflow_tracker", "--flavor=mlflow"],
-        capture_output=True
+        capture_output=True, text=True
     )
-    
+    if res1.returncode != 0 and "already exists" not in res1.stderr:
+        print(f"Warning/Info on tracker registration: {res1.stderr.strip()}")
+        
     # 2. Register a new stack that includes the default local orchestrator, artifact store, and MLflow
-    subprocess.run(
+    res2 = subprocess.run(
         ["zenml", "stack", "register", "fraud_stack", 
          "-a", "default", 
          "-o", "default", 
          "-e", "mlflow_tracker"],
-        capture_output=True
+        capture_output=True, text=True
     )
-    
+    if res2.returncode != 0 and "already exists" not in res2.stderr:
+        print(f"Warning/Info on stack registration: {res2.stderr.strip()}")
+        
     # 3. Set our custom stack as the active stack
-    subprocess.run(["zenml", "stack", "set", "fraud_stack"], capture_output=True)
+    res3 = subprocess.run(["zenml", "stack", "set", "fraud_stack"], capture_output=True, text=True)
+    if res3.returncode != 0:
+        raise RuntimeError(f"Failed to set active stack: {res3.stderr.strip()}")
+        
     print("ZenML stack 'fraud_stack' is active.\n")
 
 if __name__ == "__main__":

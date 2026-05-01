@@ -23,14 +23,16 @@ def load_and_split_data(
     # 2. Validate data
     validate_fraud_dataset(df)
     
-    # 3. Separate features and target
+    # 3. Chronological Sort (to prevent time-based data leakage)
+    df = df.sort_values(by='transaction_datetime')
+    
+    # 4. Separate features and target
     X = df.drop(columns=['is_fraud'])
     y = df['is_fraud']
     
-    # 4. Stratified Split
-    # Stratify guarantees that the tiny fraction of fraud cases is split 80/20 just like the rest of the data.
+    # 5. Split chronologically (shuffle=False)
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, stratify=y
+        X, y, test_size=test_size, shuffle=False
     )
     
     print(f"Dataset split into train ({len(X_train)} rows) and test ({len(X_test)} rows).")

@@ -3,7 +3,10 @@ from zenml import step
 from typing_extensions import Annotated
 
 @step
-def load_batch_data(file_path: str = "credit_card_fraud_dataset.csv") -> Annotated[pd.DataFrame, "batch_data"]:
+def load_batch_data(
+    file_path: str = "credit_card_fraud_dataset.csv",
+    batch_size: int = 100
+) -> Annotated[pd.DataFrame, "batch_data"]:
     """Loads unlabelled batch data for inference (simulates dropping target)."""
     df = pd.read_csv(file_path)
     
@@ -11,6 +14,6 @@ def load_batch_data(file_path: str = "credit_card_fraud_dataset.csv") -> Annotat
     if 'is_fraud' in df.columns:
         df = df.drop(columns=['is_fraud'])
         
-    # We sample 100 rows to simulate a micro-batch
-    batch = df.sample(100, random_state=42)
+    # We sample batch_size rows to simulate a micro-batch
+    batch = df.sample(batch_size, random_state=42)
     return batch

@@ -5,24 +5,18 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import RobustScaler, OneHotEncoder
 
+from core.config import DEFAULT_NUMERIC_FEATURES, DEFAULT_CATEGORICAL_FEATURES
+
 def get_preprocessor(numeric_features: Optional[List[str]] = None, 
                      categorical_features: Optional[List[str]] = None) -> Pipeline:
     """Builds the scikit-learn preprocessing pipeline."""
     
-    # Defaults based on our EDA
+    # Defaults based on our config
     if numeric_features is None:
-        numeric_features = [
-            'hour_of_day', 'day_of_week', 'is_weekend', 'amount_usd', 
-            'is_foreign_transaction', 'distance_from_home_km', 'card_present', 
-            'chip_used', 'pin_used', 'billing_address_match', 'cvv_match', 
-            'transactions_last_1h', 'transactions_last_24h', 
-            'avg_transaction_amount_last_30d', 'amount_vs_avg_ratio', 
-            'days_since_last_transaction', 'customer_age_years', 'account_age_days', 
-            'is_new_merchant', 'velocity_flag'
-        ]
+        numeric_features = DEFAULT_NUMERIC_FEATURES
         
     if categorical_features is None:
-        categorical_features = ['merchant_category', 'merchant_country']
+        categorical_features = DEFAULT_CATEGORICAL_FEATURES
 
     # Numeric pipeline: Impute missing with median, then scale robustly
     numeric_transformer = Pipeline(steps=[

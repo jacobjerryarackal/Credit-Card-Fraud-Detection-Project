@@ -2,6 +2,7 @@ README.md
 pyproject.toml
 setup.py
 core/__init__.py
+core/config.py
 core/evaluation.py
 core/preprocessing.py
 core/validation.py
@@ -11,7 +12,12 @@ credit_card_fraud_detection.egg-info/dependency_links.txt
 credit_card_fraud_detection.egg-info/requires.txt
 credit_card_fraud_detection.egg-info/top_level.txt
 pipelines/__init__.py
+pipelines/inference_pipeline.py
 pipelines/training_pipeline.py
 steps/__init__.py
+steps/load_batch.py
 steps/load_data.py
+steps/predict.py
 steps/train_model.py
+tests/test_preprocessing.py
+tests/test_validation.py

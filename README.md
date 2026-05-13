@@ -1,68 +1,289 @@
 # Credit Card Fraud Detection (MLOps MVP)
 
-A production-grade, end-to-end Machine Learning pipeline for detecting credit card fraud. Built with **ZenML**, **MLflow**, and **scikit-learn**.
+A production-grade, end-to-end Machine Learning pipeline for detecting credit card fraud using **ZenML**, **MLflow**, **scikit-learn**, and **Streamlit**.
 
-## 📌 Business Context
-The objective is to predict which credit card transactions are fraudulent at the time they occur, preventing direct financial loss and chargebacks. Because a false positive (declining a legitimate customer) is extremely frustrating and a false negative (missing fraud) is costly, the system prioritizes balancing precision and recall, optimizing for **F1-Score** and **PR-AUC**.
+This project demonstrates a full MLOps workflow:
 
-## 🏗 Architecture
-This project implements both a **Training Pipeline** and a **Batch Inference Pipeline** using ZenML, preventing training-serving skew by perfectly bundling data preprocessing with the ML model.
+* Model Training Pipeline
+* Batch Inference Pipeline
+* Experiment Tracking with MLflow
+* Interactive Fraud Detection Frontend using Streamlit
+* Production-ready deployment structure
 
-### 1. Training Pipeline
-- **Ingestion**: Validates schema and loads transactions.
-- **Preprocessing**: Handles missing values, encodes categories (OneHot), and scales numeric features (`RobustScaler` due to severe transaction outliers).
-- **Modeling**: `LogisticRegression` optimized for the massive class imbalance (`class_weight="balanced"`).
-- **Tracking**: Fully integrated with MLflow to track parameters, F1-scores, and the serialized pipeline artifact.
 
-### 2. Inference Pipeline
-- Automatically fetches the latest trained model from ZenML.
-- Ingests unlabeled batches of new transactions.
-- Outputs fraud probabilities for downstream business systems.
+---
 
-## 🚀 Getting Started
+# 📌 Business Context
 
-### 1. Installation
-Ensure you are running in a virtual environment (Python 3.8+).
+The objective is to predict whether a credit card transaction is fraudulent at the time it occurs.
+
+This helps prevent:
+
+* financial loss
+* chargebacks
+* customer trust issues
+* operational fraud investigation costs
+
+Because both errors are expensive:
+
+* **False Positive** → blocking a legitimate customer
+* **False Negative** → allowing fraud
+
+The system focuses on balancing:
+
+* Precision
+* Recall
+* F1 Score
+* PR-AUC
+
+for strong fraud detection performance.
+
+---
+
+# 🏗 Architecture
+
+This project contains:
+
+## 1. Training Pipeline
+
+Built using ZenML.
+
+### Steps:
+
+* Data ingestion + validation
+* Missing value handling
+* Feature engineering
+* OneHot Encoding for categorical features
+* RobustScaler for numerical outlier handling
+* Model training using Random Forest / Logistic Regression
+* Evaluation using Precision, Recall, F1, ROC-AUC
+* MLflow experiment tracking
+* Model artifact saving (`model.pkl`)
+
+---
+
+## 2. Batch Inference Pipeline
+
+### Steps:
+
+* Load latest trained model
+* Load fresh batch transaction data
+* Score fraud probability
+* Detect high-risk transactions
+* Trigger fraud alerts
+
+---
+
+## 3. Streamlit Frontend
+
+### Features:
+
+* Premium fraud detection dashboard
+* Manual transaction testing
+* Fraud probability scoring
+* Risk level classification
+* Recommended action (ALLOW / REVIEW / BLOCK)
+* Business rule + ML hybrid fraud detection
+
+---
+
+# ⚙ Tech Stack
+
+* **ZenML** → Pipeline orchestration
+* **MLflow** → Experiment tracking
+* **scikit-learn** → ML model training
+* **Pandas** → Data processing
+* **Streamlit** → Frontend deployment
+* **Python 3.9+**
+
+---
+
+# 📦 ZenML Version Used
+
 ```bash
-# Install core package
-pip install -e .
-
-# Install ML dependencies
-pip install zenml mlflow evidently xgboost lightgbm pandas scikit-learn
+ZenML Version: 0.57.1
 ```
 
-### 2. Initialize ZenML
+This version is stable for this project setup.
+
+Using multiple ZenML versions may cause configuration issues.
+
+---
+
+# 🚀 Complete Setup Guide
+
+---
+
+## Step 1 — Activate Virtual Environment
+
+```bash
+venv\Scripts\activate
+```
+
+You must activate the virtual environment before running anything.
+
+---
+
+## Step 2 — Install Dependencies
+
+```bash
+pip install -e .
+pip install zenml==0.57.1 mlflow evidently xgboost lightgbm pandas scikit-learn streamlit
+```
+
+---
+
+## Step 3 — Initialize ZenML (Only Once)
+
 ```bash
 zenml init
-zenml integration install mlflow -y
 ```
 
-### 3. Run the Training Pipeline
-This registers your local MLflow tracking server and trains the baseline model.
+This only needs to be done once per project.
+
+Do NOT repeat every time.
+
+---
+
+## Step 4 — Run Training Pipeline
+
 ```bash
 python run_pipeline.py
 ```
 
-### 4. Run the Batch Inference Pipeline
-This loads a fresh micro-batch of transactions and scores them using the exact same trained model pipeline.
+This will:
+
+* train the model
+* log metrics
+* save model artifact
+* create MLflow runs
+* generate `model.pkl`
+
+---
+
+## Step 5 — Run Batch Inference Pipeline
+
 ```bash
 python run_inference.py
 ```
 
-### 5. View MLflow Dashboard
-To view hyperparameters, metrics, and models:
-```bash
-mlflow ui
-```
-Navigate to `http://127.0.0.1:5000` in your browser.
+This will:
 
-## 📂 Project Structure
+* fetch latest trained model
+* score new transactions
+* detect fraud risk
+* generate fraud alerts
+
+---
+
+## Step 6 — View MLflow Dashboard
+
+Use the exact command shown after pipeline execution.
+
+Example:
+
+```bash
+mlflow ui --backend-store-uri "file:C:\Users\YOUR_USERNAME\AppData\Roaming\zenml\local_stores\...\mlruns"
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5000
+```
+
+This shows:
+
+* model metrics
+* confusion matrix
+* ROC curve
+* PR curve
+* model.pkl
+* experiment history
+
+
+---
+
+## Step 7 — Run Streamlit Frontend
+
+```bash
+streamlit run app.py
+```
+
+Then open:
+
+```text
+http://localhost:8501
+```
+
+This launches the fraud detection application UI.
+
+---
+
+# 📁 Important Deployment Setup
+
+Keep your trained model inside project root:
+
 ```text
 credit-card-fraud-detection/
-├── core/               # Pure Python logic (validation, metrics, preprocessing)
-├── steps/              # ZenML @step definitions
-├── pipelines/          # ZenML @pipeline definitions
-├── pyproject.toml      # Dependency management
-├── run_pipeline.py     # Training entrypoint
-└── run_inference.py    # Inference entrypoint
+├── app.py
+├── model.pkl
 ```
+
+and use:
+
+```python
+MODEL_PATH = "model.pkl"
+```
+
+---
+
+# 📂 Project Structure
+
+```text
+credit-card-fraud-detection/
+│
+├── core/                  # Validation, preprocessing, evaluation
+├── steps/                 # ZenML step definitions
+├── pipelines/             # ZenML pipeline definitions
+├── data/                  # Dataset
+├── app.py                 # Streamlit frontend
+├── model.pkl              # Trained model artifact
+├── run_pipeline.py        # Training pipeline entrypoint
+├── run_inference.py       # Batch inference entrypoint
+├── README.md
+├── pyproject.toml
+└── .gitignore
+```
+
+---
+
+# 🎯 Project Value
+
+This project demonstrates:
+
+* End-to-end ML system design
+* MLOps workflow understanding
+* Production deployment thinking
+* Experiment tracking
+* Fraud detection business reasoning
+* Real-world model serving
+
+This makes it much stronger than a normal ML notebook project.
+
+---
+
+# 👨‍💻 Author
+
+**Jacob Jerry Arackal**
+
+Generative AI Engineer | MLOps | Full Stack Development | Production AI Systems
+
+---
+
+# ⭐ Final Note
+
+This is not just a machine learning model.
+
+It is a deployable fraud detection system built with production thinking.
+

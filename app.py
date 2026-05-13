@@ -96,7 +96,7 @@ st.markdown("---")
 # -----------------------------
 # Load Model
 # -----------------------------
-MODEL_PATH = r"C:\Users\JACOB\AppData\Roaming\zenml\local_stores\fb7f08c2-9d6d-4c4a-b6e9-e364ba90a952\mlruns\218947906238438872\6c41f7c8247b41acb62254b806c426fd\artifacts\model\model.pkl"
+MODEL_PATH = "model.pkl"
 
 
 @st.cache_resource
